@@ -50,6 +50,70 @@ namespace BrickStreetAPI
 
         #endregion
 
+
+        #region "Departments"
+
+        public List<Department> GetDepartments(out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/department",
+                RequestFormat = DataFormat.Json,
+                Method = Method.GET
+            };
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            string content = restResponse.Content;
+            List<Department> objs = JsonConvert.DeserializeObject<List<Department>>(content);
+            return objs;
+        }
+
+        public Department GetDepartment(long id, out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/department/id/{id}",
+                RequestFormat = DataFormat.Json,
+                Method = Method.GET
+            };
+            restRequest.AddParameter("id", id.ToString(), ParameterType.UrlSegment);
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            string content = restResponse.Content;
+            Department obj = JsonConvert.DeserializeObject<Department>(content);
+            return obj;
+        }
+
+
+        #endregion
+        
+
         #region "Conversation"
 
         public List<Conversation> GetConversations(out HttpStatusCode status, out string statusMessage)

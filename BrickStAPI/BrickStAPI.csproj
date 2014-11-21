@@ -51,6 +51,7 @@
     <Compile Include="BrickStreetConnect.cs" />
     <Compile Include="Connect\CampaignObjects.cs" />
     <Compile Include="Connect\CustomerObjects.cs" />
+    <Compile Include="Connect\DepartmentObjects.cs" />
     <Compile Include="Connect\EventObjects.cs" />
     <Compile Include="Connect\JavaDateUtil.cs" />
     <Compile Include="Connect\ListManagementObjects.cs" />

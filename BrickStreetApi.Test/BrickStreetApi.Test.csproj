@@ -59,6 +59,7 @@
     <Compile Include="CampaignUnitTest.cs" />
     <Compile Include="ConversationUnitTest.cs" />
     <Compile Include="CustomerUnitTest.cs" />
+    <Compile Include="DepartmentUnitTest.cs" />
     <Compile Include="EventUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
