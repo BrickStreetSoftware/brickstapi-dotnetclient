@@ -403,7 +403,7 @@ namespace BrickStreetAPI
             return obj;
         }
 
-        public CustomerAttribute GetCustomerAttribute(string attrName, out HttpStatusCode status, out string statusMessage)
+        public BrickStAPI.Connect.Attribute GetCustomerAttribute(string attrName, out HttpStatusCode status, out string statusMessage)
         {
             RestClient restClient = createClient();
 
@@ -438,7 +438,7 @@ namespace BrickStreetAPI
             }
 
             string content = restResponse.Content;
-            CustomerAttribute obj = JsonConvert.DeserializeObject<CustomerAttribute>(content);
+            BrickStAPI.Connect.Attribute obj = JsonConvert.DeserializeObject<BrickStAPI.Connect.Attribute>(content);
             return obj;
         }
 

@@ -136,7 +136,7 @@ namespace BrickStreetApi.Test
             // NB: space in name
 
             string aname = "First Name";
-            CustomerAttribute attr = brickStreetConnect.GetCustomerAttribute(aname, out status, out statusMessage);
+            BrickStAPI.Connect.Attribute attr = brickStreetConnect.GetCustomerAttribute(aname, out status, out statusMessage);
             if (status != HttpStatusCode.OK)
             {
                 Console.WriteLine("ERROR: STATUS:" + status.ToString() + " " + statusMessage);

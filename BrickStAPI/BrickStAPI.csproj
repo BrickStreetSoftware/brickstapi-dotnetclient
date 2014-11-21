@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrickStreetConnect.cs" />
+    <Compile Include="Connect\Attribute.cs" />
     <Compile Include="Connect\CampaignObjects.cs" />
     <Compile Include="Connect\CustomerObjects.cs" />
     <Compile Include="Connect\DepartmentObjects.cs" />

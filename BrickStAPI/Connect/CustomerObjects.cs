@@ -12,6 +12,9 @@ namespace BrickStreetAPI.Connect
         public const string TYPE_ATTRIBUTE = "attribute";
         public const string TYPE_PREFERENCE = "preference";
 
+        public const string TYPE_CHANNEL = "channel";
+        public const string TYPE_MULTIADDRESS = "multiaddress";
+
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("dataType")]
@@ -20,6 +23,9 @@ namespace BrickStreetAPI.Connect
         public string Type { get; set; }
         [JsonProperty("value")]
         public string Value { get; set; }
+
+        [JsonProperty("preferenceValues")]
+        public string[] PreferenceValues { get; set; }
     }
 
     public class Customer
@@ -75,5 +81,23 @@ namespace BrickStreetAPI.Connect
 
         [JsonProperty("channelAddresses")]
         public List<CustomerAttribute> ChannelAddresses { get; set; }
+
+        public Customer()
+        {
+            Attributes = new List<CustomerAttribute>();
+            ChannelAddresses = new List<CustomerAttribute>();
+        }
+
+        public CustomerAttribute GetAttribute(string attrName)
+        {
+            return Attributes.FirstOrDefault(attr => System.String.Compare(attr.Name, attrName, System.StringComparison.OrdinalIgnoreCase) == 0);
+        }
+
+        public CustomerAttribute GetChannelAddress(string attrName)
+        {
+            return
+                ChannelAddresses.FirstOrDefault(
+                    attr => System.String.Compare(attr.Name, attrName, System.StringComparison.OrdinalIgnoreCase) == 0);
+        }
     }
 }
