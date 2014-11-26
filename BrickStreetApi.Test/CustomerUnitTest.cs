@@ -179,7 +179,7 @@ namespace BrickStreetApi.Test
             Assert.AreEqual(dbCust.AltCustomerId, getCust.AltCustomerId);
             Assert.AreEqual(dbCust.EmailAddress, getCust.EmailAddress);
             Assert.AreEqual(dbCust.LastName, getCust.LastName);
-            Assert.AreEqual(dbCust.FirstName, getCust.FirstName);        
+            Assert.AreEqual(dbCust.FirstName, getCust.FirstName);
         }
 
         [TestMethod]
@@ -346,7 +346,7 @@ namespace BrickStreetApi.Test
             HttpStatusCode status;
             string statusMessage;
             BrickStreetConnect brickStreetConnect = makeClient();
-            var attrDef = brickStreetConnect.GetCustomerAttribute("name", out status, out statusMessage);
+            var attrDef = brickStreetConnect.GetCustomerAttribute(attributeName, out status, out statusMessage);
             Assert.AreNotEqual(attrDef, "Attribute Not Found");
 
             //create new customer
@@ -376,7 +376,7 @@ namespace BrickStreetApi.Test
             Assert.IsNotNull(c2);
             Assert.IsNotNull(c2.Id);
             Assert.AreEqual(c2.EmailAddress, custVal);
-            Assert.AreNotEqual(c2.AltCustomerId, custVal);
+            Assert.AreEqual(c2.AltCustomerId, custVal);
 
             CustomerAttribute attr = c2.GetAttribute(attributeName);
             if (attr == null)
@@ -404,7 +404,7 @@ namespace BrickStreetApi.Test
 
             CustomerAttribute c3attr = c3.GetAttribute(attributeName);
             Assert.IsNotNull(c3attr);
-            Assert.Equals(c3attr.Value, attributeValue);
+            Assert.AreEqual(c3attr.Value, attributeValue);
         }
 
         [TestMethod]
@@ -421,6 +421,8 @@ namespace BrickStreetApi.Test
             {
                 Console.WriteLine("ERROR: STATUS:" + status.ToString() + " " + statusMessage);
             }
+
+            Assert.IsNotNull(attrDef);
             string attrType = attrDef.Type;
             //create new customer
             Random r = new Random();
