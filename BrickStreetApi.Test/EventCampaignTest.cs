@@ -29,10 +29,10 @@ namespace BrickStreetApi.Test
             //
             //Test Parameters
             //
-            string altCustId = string.Empty;
-            string eventName = string.Empty;
-            string tokenName = string.Empty;
-            string tokenValue = string.Empty;
+            string altCustId = ConfigurationManager.AppSettings["AltCustId"];
+            string eventName = ConfigurationManager.AppSettings["EventName"];
+            string tokenName = ConfigurationManager.AppSettings["TokenName"];
+            string tokenValue = ConfigurationManager.AppSettings["TokenValue"];
             //
 
             BrickStreetConnect brickst = makeClient();

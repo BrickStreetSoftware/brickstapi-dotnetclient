@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Configuration;
 using System.Net;
 using BrickStreetAPI;
@@ -490,6 +491,7 @@ namespace BrickStreetApi.Test
                 attr = c.GetChannelAddress(preferenceName);
                 if (attr == null)
                 {
+                    attr = new CustomerAttribute();
                     attr.Name = attrDef.Name;
                     attr.Type = attrDef.Type;
                     attr.DataType = attrDef.DataType;
@@ -537,8 +539,9 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-            Assert.IsTrue(prefVals.Equals(c2attr.PreferenceValues));
-
+           // Assert.IsTrue(prefVals.Equals(c2attr.PreferenceValues));
+            CollectionAssert.AreEqual(prefVals,c2attr.PreferenceValues);
+           
             c = c2;
 
             //
@@ -561,6 +564,7 @@ namespace BrickStreetApi.Test
                 string[] vals = attr.PreferenceValues;
                 string[] newVals = new string[vals.Length + 1];
                 Array.Copy(vals, 0, newVals, 0, vals.Length);
+                newVals[newVals.Length - 1] = "pval" + val;
                 attr.PreferenceValues = newVals;
 
             }
@@ -573,6 +577,7 @@ namespace BrickStreetApi.Test
                 string[] vals = attr.PreferenceValues;
                 string[] newVals = new string[vals.Length + 1];
                 Array.Copy(vals, 0, newVals, 0, vals.Length);
+                newVals[newVals.Length - 1] = "pval" + val;
                 attr.PreferenceValues = newVals;
             }
             else
@@ -596,7 +601,7 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-            Assert.IsTrue(prefVals.Equals(c2attr.PreferenceValues));
+            CollectionAssert.AreEqual(prefVals,c2attr.PreferenceValues);
 
             c = c2;
 
@@ -616,7 +621,7 @@ namespace BrickStreetApi.Test
 
             //remove first value
             string[] oldVals = attr.PreferenceValues;
-            string[] newVals1 = new string[oldVals.Length + 1];
+            string[] newVals1 = new string[oldVals.Length - 1];
             Array.Copy(oldVals, 1, newVals1, 0, newVals1.Length);
             attr.PreferenceValues = newVals1;
 
@@ -636,7 +641,7 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-            Assert.IsTrue(prefVals.Equals(c2attr));
+            CollectionAssert.AreEqual(prefVals, c2attr.PreferenceValues);
 
         }
     }
