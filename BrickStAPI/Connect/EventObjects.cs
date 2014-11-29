@@ -100,13 +100,16 @@ namespace BrickStreetAPI.Connect
         private DateTime? _expirationDate;
 
         // Used by .NET code; invisible to JSON
-        [JsonIgnore]
+        //[JsonIgnore]
+         [JsonProperty("effectiveDate")]
         public DateTime? EffectiveDate 
         {
             get { return _effectiveDate; }
             set { _effectiveDate = value; }
         }
-        [JsonIgnore]
+
+        //[JsonIgnore]
+         [JsonProperty("expirationDate")]
         public DateTime? ExpirationDate
         {
             get { return _expirationDate; }
@@ -114,7 +117,8 @@ namespace BrickStreetAPI.Connect
         }
 
         // Java Date serialize/deserialize code
-        [JsonProperty("effectiveDate")]
+       // [JsonProperty("effectiveDate")]
+        [JsonIgnore]
         public long? EffectiveDateJava
         {
             get
@@ -132,7 +136,8 @@ namespace BrickStreetAPI.Connect
             }
         }
 
-        [JsonProperty("expirationDate")]
+        //[JsonProperty("expirationDate")]
+        [JsonIgnore]
         public long? ExpirationDateJava
         {
             get
