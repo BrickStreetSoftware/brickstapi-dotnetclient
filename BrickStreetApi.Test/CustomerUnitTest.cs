@@ -539,8 +539,8 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-           // Assert.IsTrue(prefVals.Equals(c2attr.PreferenceValues));
-            CollectionAssert.AreEqual(prefVals,c2attr.PreferenceValues);
+            // unordered set compare
+            CollectionAssert.AreEquivalent(prefVals,c2attr.PreferenceValues);
            
             c = c2;
 
@@ -601,7 +601,7 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-            CollectionAssert.AreEqual(prefVals,c2attr.PreferenceValues);
+            CollectionAssert.AreEquivalent(prefVals,c2attr.PreferenceValues);
 
             c = c2;
 
@@ -641,8 +641,246 @@ namespace BrickStreetApi.Test
             }
 
             Assert.IsNotNull(c2attr);
-            CollectionAssert.AreEqual(prefVals, c2attr.PreferenceValues);
+            CollectionAssert.AreEquivalent(prefVals, c2attr.PreferenceValues);
 
         }
+
+        [TestMethod]
+        public void AddCustomerWithMultiaddress()
+        {
+            string preferenceName = ConfigurationManager.AppSettings["MultiaddressName"];
+            HttpStatusCode status;
+            string statusMessage;
+            BrickStreetConnect brickStreetConnect = makeClient();
+
+            BrickStAPI.Connect.Attribute attrDef = brickStreetConnect.GetCustomerAttribute(preferenceName, out status,
+                out statusMessage);
+            if (status != HttpStatusCode.OK)
+            {
+                Console.WriteLine("ERROR: STATUS:" + status.ToString() + " " + statusMessage);
+            }
+
+            Assert.IsNotNull(attrDef);
+            string attrType = attrDef.Type;
+            //create new customer
+            Random r = new Random();
+            long val = r.Next();
+            if (val < 0)
+            {
+                val *= -1;
+            }
+
+            String custVal = "cmaeda+" + val + "@cmaeda.com";
+
+            Customer c = new Customer();
+            c.EmailAddress = custVal;
+            c.AltCustomerId = custVal;
+            c.AddressLine1 = "215 S Broadway 241";
+            c.City = "Salem";
+            c.State = "NH";
+            c.Country = "USA";
+
+            Customer c2 = brickStreetConnect.AddCustomer(c, out status, out statusMessage);
+            if (status != HttpStatusCode.OK)
+            {
+                Console.WriteLine("ERROR: STATUS:" + status.ToString() + " " + statusMessage);
+            }
+
+            Assert.IsNotNull(c2, "Customer is null");
+            Assert.IsNotNull(c2.Id, "Customer ID is null");
+            Assert.AreEqual(c2.EmailAddress, custVal);
+            Assert.AreEqual(c2.AltCustomerId, custVal);
+
+            c = c2;
+
+            //
+            //add preference
+            //
+
+            CustomerAttribute attr = null;
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                attr = c.GetAttribute(preferenceName);
+                if (attr == null)
+                {
+                    attr = new CustomerAttribute();
+                    attr.Name = attrDef.Name;
+                    attr.Type = attrDef.Type;
+                    attr.DataType = attrDef.DataType;
+
+                    //start with 1 value
+                    attr.PreferenceValues = new string[1];
+                    attr.PreferenceValues[0] = "pval" + val;
+                    c.Attributes.Add(attr);
+                }
+                else
+                {
+                    string[] vals = attr.PreferenceValues;
+                    string[] newVals = new string[vals.Length + 1];
+                    Array.Copy(vals, 0, newVals, 0, vals.Length);
+                    newVals[newVals.Length - 1] = "pval" + val;
+                    attr.PreferenceValues = newVals;
+                }
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                //add a channel address
+                attr = c.GetChannelAddress(preferenceName);
+                if (attr == null)
+                {
+                    attr = new CustomerAttribute();
+                    attr.Name = attrDef.Name;
+                    attr.Type = attrDef.Type;
+                    attr.DataType = attrDef.DataType;
+
+                    //start with 1 value
+                    attr.PreferenceValues = new string[1];
+                    attr.PreferenceValues[0] = "pval" + val;
+                    c.ChannelAddresses.Add(attr);
+                }
+                else
+                {
+                    string[] vals = attr.PreferenceValues;
+                    string[] newVals = new string[vals.Length + 1];
+                    Array.Copy(vals, 0, newVals, 0, vals.Length);
+                    newVals[newVals.Length - 1] = "pval" + val;
+                    attr.PreferenceValues = newVals;
+                }
+
+            }
+            else
+            {
+                Assert.IsTrue(false, "Unknown pref type " + attrType);
+            }
+
+            //save orig value
+            string[] prefVals = attr.PreferenceValues;
+
+            c2 = brickStreetConnect.UpdateCustomer(c, out status, out statusMessage);
+            if (status != HttpStatusCode.OK)
+            {
+                Console.WriteLine("ERROR: STATUS:" + status.ToString() + " " + statusMessage);
+            }
+
+            Assert.IsNotNull(c2, "Customer 2 is null");
+
+            //check saved data
+            CustomerAttribute c2attr = null;
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetAttribute(preferenceName);
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetChannelAddress(preferenceName);
+            }
+
+            Assert.IsNotNull(c2attr);
+            CollectionAssert.AreEquivalent(prefVals, c2attr.PreferenceValues);
+
+            c = c2;
+
+            //
+            //add a second pref value
+            //
+
+            //new random value
+            val = r.Next();
+            if (val < 0)
+            {
+                val *= -1;
+            }
+
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                attr = c.GetAttribute(preferenceName);
+                Assert.IsNotNull(attr);
+
+                //add a value
+                string[] vals = attr.PreferenceValues;
+                string[] newVals = new string[vals.Length + 1];
+                Array.Copy(vals, 0, newVals, 0, vals.Length);
+                newVals[newVals.Length - 1] = "pval" + val;
+                attr.PreferenceValues = newVals;
+
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                //add a channel
+                attr = c.GetChannelAddress(preferenceName);
+                Assert.IsNotNull(attr);
+
+                string[] vals = attr.PreferenceValues;
+                string[] newVals = new string[vals.Length + 1];
+                Array.Copy(vals, 0, newVals, 0, vals.Length);
+                newVals[newVals.Length - 1] = "pval" + val;
+                attr.PreferenceValues = newVals;
+            }
+            else
+            {
+                Assert.IsTrue(false, "Unknown pref type " + attrType);
+            }
+
+            prefVals = attr.PreferenceValues;
+            c2 = brickStreetConnect.UpdateCustomer(c, out status, out statusMessage);
+            Assert.IsNotNull(c2, "Customer 2 is null");
+
+            //check saved data
+            c2attr = null;
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetAttribute(preferenceName);
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetChannelAddress(preferenceName);
+            }
+
+            Assert.IsNotNull(c2attr);
+            CollectionAssert.AreEquivalent(prefVals, c2attr.PreferenceValues);
+
+            c = c2;
+
+            //
+            //remove a preference
+            //
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                attr = c2.GetAttribute(preferenceName);
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                attr = c2.GetChannelAddress(preferenceName);
+            }
+
+            Assert.IsNotNull(attr);
+
+            //remove first value
+            string[] oldVals = attr.PreferenceValues;
+            string[] newVals1 = new string[oldVals.Length - 1];
+            Array.Copy(oldVals, 1, newVals1, 0, newVals1.Length);
+            attr.PreferenceValues = newVals1;
+
+            prefVals = attr.PreferenceValues;
+            c2 = brickStreetConnect.UpdateCustomer(c, out status, out statusMessage);
+            Assert.AreNotEqual(c2, "Customer 2 is null");
+
+            //check saved data
+            c2attr = null;
+            if (string.Compare("preference", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetAttribute(preferenceName);
+            }
+            else if (string.Compare("multiaddress", attrType, StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                c2attr = c2.GetChannelAddress(preferenceName);
+            }
+
+            Assert.IsNotNull(c2attr);
+            CollectionAssert.AreEquivalent(prefVals, c2attr.PreferenceValues);
+
+        }
+    
+    
     }
 }
