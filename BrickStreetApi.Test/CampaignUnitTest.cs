@@ -36,18 +36,6 @@ namespace BrickStreetApi.Test
         }
 
         [TestMethod]
-        public void SendersGetAll()
-        {
-            BrickStreetConnect brickst = makeClient();
-
-            HttpStatusCode status;
-            List<Sender> senders = brickst.GetSenders(out status);
-
-            Assert.AreEqual(HttpStatusCode.OK, status);
-            Assert.IsNotNull(senders);
-        }
-
-        [TestMethod]
         public void CampaignGetByName()
         {
             BrickStreetConnect brickst = makeClient();

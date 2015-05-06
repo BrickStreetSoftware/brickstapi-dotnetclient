@@ -63,6 +63,7 @@
     <Compile Include="EventUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventCampaignTest.cs" />
+    <Compile Include="SenderUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

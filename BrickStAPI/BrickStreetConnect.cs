@@ -543,7 +543,7 @@ namespace BrickStreetAPI
 
         #region "Senders"
 
-        public List<Sender> GetSenders(out HttpStatusCode status)
+        public List<Sender> GetSenders(out HttpStatusCode status, out string statusMessage)
         {
             RestClient restClient = createClient();
 
@@ -562,13 +562,262 @@ namespace BrickStreetAPI
             status = restResponse.StatusCode;
             if (status != HttpStatusCode.OK)
             {
+                statusMessage = restResponse.Content;
                 return null;
+            }
+            else
+            {
+                statusMessage = null;
             }
 
             string content = restResponse.Content;
             List<Sender> senders = JsonConvert.DeserializeObject<List<Sender>>(content);
             return senders;
-        }                
+        }
+
+        public List<SenderDomain> GetSenderDomains(out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/senderDomain",
+                RequestFormat = DataFormat.Json,
+                Method = Method.GET
+            };
+
+            //
+            // NOTE: The JSON deserializer built into the RestSharp
+            // package does not work well, so we use Newtonsoft instead.
+            //
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            string content = restResponse.Content;
+            List<SenderDomain> domains = JsonConvert.DeserializeObject<List<SenderDomain>>(content);
+            return domains;
+        }
+
+        public Sender GetSender(long id, out HttpStatusCode status, out string statusMessage)
+        {
+            string uri = "data/sender/id/{id}";
+            string paramName = "id";
+            string paramVal = id.ToString();
+
+            RestClient restClient = createClient();
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = uri,
+                RequestFormat = DataFormat.Json,
+                Method = Method.GET
+            };
+            restRequest.AddParameter(paramName, paramVal, ParameterType.UrlSegment);
+
+            //
+            // NOTE: The JSON deserializer built into the RestSharp
+            // package does not work well with our classes, so we use Newtonsoft instead.
+            //
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            string content = restResponse.Content;
+            Sender obj = JsonConvert.DeserializeObject<Sender>(content);
+            return obj;
+        }
+
+        public SenderDomain GetSenderDomain(long id, out HttpStatusCode status, out string statusMessage)
+        {
+            string uri = "data/senderDomain/id/{id}";
+            string paramName = "id";
+            string paramVal = id.ToString();
+
+            RestClient restClient = createClient();
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = uri,
+                RequestFormat = DataFormat.Json,
+                Method = Method.GET
+            };
+            restRequest.AddParameter(paramName, paramVal, ParameterType.UrlSegment);
+
+            //
+            // NOTE: The JSON deserializer built into the RestSharp
+            // package does not work well with our classes, so we use Newtonsoft instead.
+            //
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            string content = restResponse.Content;
+            SenderDomain obj = JsonConvert.DeserializeObject<SenderDomain>(content);
+            return obj;
+        }
+
+        public Sender UpdateSender(Sender newSender, out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/sender",
+                RequestFormat = DataFormat.Json,
+                Method = Method.PUT
+            };
+
+            // we handle our own serialization instead of calling AddBody
+            JsonSerializerSettings serSettings = new JsonSerializerSettings();
+            serSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+            serSettings.NullValueHandling = NullValueHandling.Ignore;
+            string serialized = JsonConvert.SerializeObject(newSender, serSettings);
+            restRequest.AddParameter("application/json", serialized, ParameterType.RequestBody);
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            serialized = restResponse.Content;
+            Sender obj = JsonConvert.DeserializeObject<Sender>(serialized);
+            return obj;
+        }
+
+        public SenderDomain UpdateSenderDomain(SenderDomain newDomain, out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/senderDomain",
+                RequestFormat = DataFormat.Json,
+                Method = Method.PUT
+            };
+
+            // we handle our own serialization instead of calling AddBody
+            JsonSerializerSettings serSettings = new JsonSerializerSettings();
+            serSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+            serSettings.NullValueHandling = NullValueHandling.Ignore;
+            string serialized = JsonConvert.SerializeObject(newDomain, serSettings);
+            restRequest.AddParameter("application/json", serialized, ParameterType.RequestBody);
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            serialized = restResponse.Content;
+            SenderDomain obj = JsonConvert.DeserializeObject<SenderDomain>(serialized);
+            return obj;
+        }
+
+        public Sender AddSender(Sender newSender, out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/sender",
+                RequestFormat = DataFormat.Json,
+                Method = Method.POST
+            };
+            // we handle our own serialization instead of calling AddBody
+            JsonSerializerSettings serSettings = new JsonSerializerSettings();
+            serSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+            serSettings.NullValueHandling = NullValueHandling.Ignore;
+
+            string serialized = JsonConvert.SerializeObject(newSender, serSettings);
+            restRequest.AddParameter("application/json", serialized, ParameterType.RequestBody);
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            serialized = restResponse.Content;
+            Sender obj = JsonConvert.DeserializeObject<Sender>(serialized);
+            return obj;
+        }
+
+        public SenderDomain AddSenderDomain(SenderDomain newDomain, out HttpStatusCode status, out string statusMessage)
+        {
+            RestClient restClient = createClient();
+
+            RestRequest restRequest = new RestRequest
+            {
+                Resource = "data/senderDomain",
+                RequestFormat = DataFormat.Json,
+                Method = Method.POST
+            };
+            // we handle our own serialization instead of calling AddBody
+            JsonSerializerSettings serSettings = new JsonSerializerSettings();
+            serSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+            serSettings.NullValueHandling = NullValueHandling.Ignore;
+
+            string serialized = JsonConvert.SerializeObject(newDomain, serSettings);
+            restRequest.AddParameter("application/json", serialized, ParameterType.RequestBody);
+
+            IRestResponse restResponse = restClient.Execute(restRequest);
+            status = restResponse.StatusCode;
+            if (status != HttpStatusCode.OK)
+            {
+                statusMessage = restResponse.Content;
+                return null;
+            }
+            else
+            {
+                statusMessage = null;
+            }
+
+            serialized = restResponse.Content;
+            SenderDomain obj = JsonConvert.DeserializeObject<SenderDomain>(serialized);
+            return obj;
+        }
 
         #endregion
 

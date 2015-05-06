@@ -32,8 +32,8 @@ namespace BrickStreetAPI.Connect
         public long? SenderID { get; set; }
         [JsonProperty("mailFarmID")]
         public long? MailFarmID { get; set; }
-        [JsonProperty("receiverDomain")]
-        public long? ReceiverDomain { get; set; }
+        [JsonProperty("senderDomain")]
+        public long? SenderDomain { get; set; }
 
         [JsonProperty("signingEnabled")]
         public bool? SigningEnabled { get; set; }
@@ -43,4 +43,21 @@ namespace BrickStreetAPI.Connect
         [JsonProperty("unsubscribeDefaultText")]
         public string UnsubscribeDefaultText { get; set; }
     }
+
+    public class SenderDomain
+    {
+        [JsonProperty("id")]
+        public long? Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("defaultDomain")]
+        public bool? DefaultDomain { get; set; }
+        [JsonProperty("signingAlg")]
+        public int SigningAlg { get; set; }
+        [JsonProperty("selector")]
+        public string Selector { get; set; }
+        [JsonProperty("privateKey")]
+        public string PrivateKey { get; set; }
+    }
+
 }
